@@ -1,0 +1,211 @@
+/* =========================================================================
+   VARIABLES Y CONFIGURACIÓN GENERAL
+   ========================================================================= */
+:root {
+    --primary-color: #1e3a8a;   /* Azul Oscuro Corporativo */
+    --secondary-color: #0d9488; /* Verde Azulado */
+    --danger-color: #e11d48;    /* Rojo suave para errores/logout */
+    --bg-color: #f1f5f9;        /* Fondo gris claro */
+    --card-bg: #ffffff;         /* Fondo de tarjetas blanco */
+    --text-color: #334155;      /* Gris oscuro para texto */
+    --border-color: #cbd5e1;    /* Bordes sutiles */
+    --radius: 8px;
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* =========================================================================
+   COMPONENTES DE DISEÑO (HEADER, CARDS, FOOTER)
+   ========================================================================= */
+header {
+    background: linear-gradient(135deg, var(--primary-color), #0f172a);
+    color: white;
+    text-align: center;
+    padding: 40px 0;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    margin-bottom: 25px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 50px;
+    color: #64748b;
+    border-top: 1px solid var(--border-color);
+}
+
+/* =========================================================================
+   FORMULARIOS Y ELEMENTOS DE ENTRADA
+   ========================================================================= */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
+}
+
+/* Botones */
+button {
+    cursor: pointer;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: bold;
+    transition: var(--transition);
+}
+
+.btn-primary { background-color: var(--primary-color); color: white; width: 100%; }
+.btn-primary:hover { background-color: #1d4ed8; }
+
+.btn-secondary { background-color: var(--secondary-color); color: white; width: 100%; }
+.btn-secondary:hover { background-color: #0f766e; }
+
+.btn-danger { background-color: var(--danger-color); color: white; }
+.btn-danger:hover { background-color: #be123c; }
+
+.btn-refresh { background-color: #64748b; color: white; font-size: 0.85rem; padding: 6px 12px; }
+.btn-refresh:hover { background-color: #475569; }
+
+/* Pestañas de Autenticación */
+.auth-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.tab-btn {
+    flex: 1;
+    background: none;
+    color: #64748b;
+    padding: 12px;
+    border-radius: 0;
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
+}
+
+/* =========================================================================
+   TABLAS RESPONSIVAS
+   ========================================================================= */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.95rem;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background-color: #f8fafc;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #f8fafc;
+}
+
+/* =========================================================================
+   UTILIDADES, ANIMACIONES Y GRID SYSTEM
+   ========================================================================= */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+}
+
+@media (min-width: 768px) {
+    .grid-2 { grid-template-columns: 1fr 1.5fr; }
+    #auth-section { max-width: 450px; margin: 0 auto 25px auto; }
+}
+
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+.message { margin-top: 10px; font-weight: bold; font-size: 0.9rem; text-align: center; }
+.success { color: #16a34a; }
+.error { color: var(--danger-color); }
+
+.welcome-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, #ffffff, #f8fafc);
+}
+
+/* Animaciones */
+.animate-fade-in { animation: fadeIn 0.6s ease-out; }
+.animate-slide-up { animation: slideUp 0.5s ease-out; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECNOINNOVA S.A. - Panel de Control</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <header>
+        <div class="container animate-fade-in">
+            <h1>TECNOINNOVA S.A.</h1>
+            <p>Sistema de Gestión de Base de Datos - Cátedra: Base de Datos I</p>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <section id="auth-section" class="card animate-slide-up">
+            <div class="auth-tabs">
+                <button id="tab-login" class="tab-btn active" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+                <button id="tab-register" class="tab-btn" onclick="switchAuthTab('register')">Crear Usuario</button>
+            </div>
+
+            <form id="login-form" class="auth-form">
+                <h3>Ingreso al Sistema</h3>
+                <div class="form-group">
+                    <label for="login-username">Usuario:</label>
+                    <input type="text" id="login-username" placeholder="Ej: angel_admin" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Contraseña:</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary">Entrar</button>
+            </form>
+
+            <form id="register-form" class="auth-form hidden">
+                <h3>Registro de Nuevo Usuario</h3>
+                <div class="form-group">
+                    <label for="reg-username">Nombre de Usuario:</label>
+                    <input type="text" id="reg-username" placeholder="Ej: nuevo_tecnico" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Contraseña:</label>
+                    <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" required>
+                </div>
+                <button type="submit" class="btn-secondary">Registrar Cuenta</button>
+            </form>
+            <p id="auth-message" class="message"></p>
+        </section>
+
+        <section id="dashboard-section" class="hidden">
+            
+            <div class="welcome-box card">
+                <h2>¡Bienvenido al Panel, <span id="user-display">Invitado</span>!</h2>
+                <button onclick="logout()" class="btn-danger">Cerrar Sesión</button>
+            </div>
+
+            <div class="grid-2">
+                <div class="card animate-slide-up">
+                    <h3>Registrar Nuevo Cliente</h3>
+                    <form id="client-form">
+                        <div class="form-group">
+                            <label for="cli-id">ID Cliente:</label>
+                            <input type="text" id="cli-id" placeholder="Ej: CLI16" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cli-nombre">Nombre Completo / Empresa:</label>
+                            <input type="text" id="cli-nombre" placeholder="Ej: Juan Pérez" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cli-telefono">Teléfono:</label>
+                            <input type="text" id="cli-telefono" placeholder="Ej: 555-1234">
+                        </div>
+                        <div class="form-group">
+                            <label for="cli-correo">Correo Electrónico:</label>
+                            <input type="email" id="cli-correo" placeholder="correo@ejemplo.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="cli-credito">Historial Crediticio:</label>
+                            <select id="cli-credito">
+                                <option value="Excelente">Excelente</option>
+                                <option value="Regular">Regular</option>
+                                <option value="Pendiente de Pago">Pendiente de Pago</option>
+                                <option value="Malo">Malo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cli-zona">Zona Asignada:</label>
+                            <select id="cli-zona">
+                                <option value="Z01">Z01 - Norte</option>
+                                <option value="Z02">Z02 - Sur</option>
+                                <option value="Z03">Z03 - Centro</option>
+                                <option value="Z04">Z04 - Este</option>
+                                <option value="Z05">Z05 - Oeste</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">Guardar Cliente</button>
+                    </form>
+                    <p id="client-message" class="message"></p>
+                </div>
+
+                <div class="card animate-slide-up">
+                    <div class="table-header">
+                        <h3>Lista de Clientes Registrados</h3>
+                        <button onclick="fetchClientes()" class="btn-refresh">🔄 Actualizar</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Teléfono</th>
+                                    <th>Correo</th>
+                                    <th>Crédito</th>
+                                    <th>Zona</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientes-table-body">
+                                <tr>
+                                    <td colspan="6" class="text-center">Cargando datos desde Supabase...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 - Diseño de Base de Datos I. Desarrollado por Ángel Jiménez.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
