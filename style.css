@@ -209,3 +209,41 @@ tr:hover {
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Botones de navegación del panel */
+.table-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+.btn-tab {
+    background: #edf2f7;
+    color: #4a5568;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: 0.2s;
+}
+.btn-tab.active, .btn-tab:hover {
+    background: #3182ce;
+    color: white;
+}
+
+/* Botón de eliminar fila */
+.btn-delete {
+    background: #e53e3e;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: 0.2s;
+}
+.btn-delete:hover {
+    background: #c53030;
+}
