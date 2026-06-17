@@ -1,11 +1,11 @@
 // =========================================================================
-// CONFIGURACIÓN DE SUPABASE - REEMPLAZA CON TUS CREDENCIALES REALES
+// CONFIGURACIÓN DE SUPABASE - CREDENCIALES REALES CONECTADAS
 // =========================================================================
 const SUPABASE_URL = "https://wxesqplgztzxayfxjyvg.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_qS9VyJvRyVpZdtzmFHypwQ_pY1ZCwDA";
 
-// Inicialización del cliente global de Supabase
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Inicialización corregida usando la instancia del SDK global
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Elementos del DOM guardados en variables para optimizar accesos
 const authSection = document.getElementById('auth-section');
@@ -76,14 +76,14 @@ registerForm.addEventListener('submit', async (e) => {
         return;
     }
 
-    // Insertar el nuevo usuario en la tabla 'usuarios' que creamos en tu Script de PostgreSQL
-    const { data, error } = await supabase
+    // CORREGIDO: Uso de supabaseClient
+    const { data, error } = await supabaseClient
         .from('usuarios')
-        .insert([{ username: username, password_hash: password }]); // Nota: Para fines académicos guardamos la clave, en producción debe encriptarse.
+        .insert([{ username: username, password_hash: password }]); 
 
     if (error) {
         console.error(error);
-        if (error.code === '23505') { // Código SQL para violación de clave única (Username duplicado)
+        if (error.code === '23505') { 
             showFeedback(authMessage, 'El nombre de usuario ya está registrado.', 'error');
         } else {
             showFeedback(authMessage, `Error al registrar: ${error.message}`, 'error');
@@ -104,21 +104,21 @@ loginForm.addEventListener('submit', async (e) => {
     const username = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value;
 
-    // Buscar el usuario en la tabla de la base de datos
-    const { data, error } = await supabase
+    // CORREGIDO: Uso de supabaseClient
+    const { data, error } = await supabaseClient
         .from('usuarios')
         .select('*')
         .eq('username', username)
-        .single(); // Traer solo un registro coincidente
+        .single(); 
 
     if (error || !data) {
         showFeedback(authMessage, 'Usuario no encontrado o error de red.', 'error');
         return;
     }
 
-    // Validar contraseña (Simulada contra el hash/texto plano de la DB)
+    // Validar contraseña
     if (data.password_hash === password) {
-        localStorage.setItem('tecnoinnova_user', data.username); // Guardar estado de sesión local
+        localStorage.setItem('tecnoinnova_user', data.username); 
         showFeedback(authMessage, '¡Acceso concedido!', 'success');
         
         setTimeout(() => {
@@ -145,8 +145,8 @@ function logout() {
 async function fetchClientes() {
     clientesTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Actualizando datos...</td></tr>';
 
-    // Hacer una consulta SELECT * FROM Clientes ordenados por su ID
-    const { data, error } = await supabase
+    // CORREGIDO: Uso de supabaseClient
+    const { data, error } = await supabaseClient
         .from('clientes')
         .select('*')
         .order('id_cliente', { ascending: true });
@@ -161,7 +161,7 @@ async function fetchClientes() {
         return;
     }
 
-    // Limpiar tabla e inyectar las filas dinámicamente con los datos recuperados
+    // Limpiar tabla e inyectar las filas dinámicamente
     clientesTableBody.innerHTML = '';
     data.forEach(cliente => {
         const row = document.createElement('tr');
@@ -187,7 +187,6 @@ document.getElementById('client-form').addEventListener('submit', async (e) => {
     clientMessage.textContent = "Guardando...";
     clientMessage.className = "message";
 
-    // Recoger los datos estructurados del formulario de clientes
     const nuevoCliente = {
         id_cliente: document.getElementById('cli-id').value.trim().toUpperCase(),
         nombre: document.getElementById('cli-nombre').value.trim(),
@@ -197,8 +196,8 @@ document.getElementById('client-form').addEventListener('submit', async (e) => {
         id_zona: document.getElementById('cli-zona').value
     };
 
-    // Ejecutar la inserción en la tabla 'clientes' de Supabase
-    const { data, error } = await supabase
+    // CORREGIDO: Uso de supabaseClient
+    const { data, error } = await supabaseClient
         .from('clientes')
         .insert([nuevoCliente]);
 
@@ -208,7 +207,7 @@ document.getElementById('client-form').addEventListener('submit', async (e) => {
     } else {
         showFeedback(clientMessage, '¡Cliente registrado con éxito en Supabase!', 'success');
         document.getElementById('client-form').reset();
-        fetchClientes(); // Volver a consultar la base de datos para ver el nuevo registro en la tabla
+        fetchClientes(); 
     }
 });
 
@@ -222,5 +221,5 @@ function showFeedback(element, text, type) {
     element.className = `message ${type}`;
 }
 
-// Ejecutar al cargar la página por primera vez para comprobar si ya estaba logueado
+// Ejecutar al cargar la página por primera vez
 document.addEventListener('DOMContentLoaded', checkSession);
