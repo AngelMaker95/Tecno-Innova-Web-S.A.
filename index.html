@@ -52,84 +52,31 @@
             <p id="auth-message" class="message"></p>
         </section>
 
-        <section id="dashboard-section" class="hidden">
-            
-            <div class="welcome-box card">
-                <h2>¡Bienvenido al Panel, <span id="user-display">Invitado</span>!</h2>
-                <button onclick="logout()" class="btn-danger">Cerrar Sesión</button>
-            </div>
+<section id="dashboard-section" class="card hidden">
+    <div class="dashboard-header">
+        <h2>Panel de Control - TecnoInnova S.A.</h2>
+        <p>Bienvenido, <span id="user-display" class="highlight"></span> | <a href="#" onclick="logout()">Cerrar Sesión</a></p>
+    </div>
 
-            <div class="grid-2">
-                <div class="card animate-slide-up">
-                    <h3>Registrar Nuevo Cliente</h3>
-                    <form id="client-form">
-                        <div class="form-group">
-                            <label for="cli-id">ID Cliente:</label>
-                            <input type="text" id="cli-id" placeholder="Ej: CLI16" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="cli-nombre">Nombre Completo / Empresa:</label>
-                            <input type="text" id="cli-nombre" placeholder="Ej: Juan Pérez" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="cli-telefono">Teléfono:</label>
-                            <input type="text" id="cli-telefono" placeholder="Ej: 555-1234">
-                        </div>
-                        <div class="form-group">
-                            <label for="cli-correo">Correo Electrónico:</label>
-                            <input type="email" id="cli-correo" placeholder="correo@ejemplo.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="cli-credito">Historial Crediticio:</label>
-                            <select id="cli-credito">
-                                <option value="Excelente">Excelente</option>
-                                <option value="Regular">Regular</option>
-                                <option value="Pendiente de Pago">Pendiente de Pago</option>
-                                <option value="Malo">Malo</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="cli-zona">Zona Asignada:</label>
-                            <select id="cli-zona">
-                                <option value="Z01">Z01 - Norte</option>
-                                <option value="Z02">Z02 - Sur</option>
-                                <option value="Z03">Z03 - Centro</option>
-                                <option value="Z04">Z04 - Este</option>
-                                <option value="Z05">Z05 - Oeste</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn-primary">Guardar Cliente</button>
-                    </form>
-                    <p id="client-message" class="message"></p>
-                </div>
+    <div class="table-selector">
+        <button onclick="changeTable('clientes')" id="btn-tab-clientes" class="btn-tab active">Clientes</button>
+        <button onclick="changeTable('productos')" id="btn-tab-productos" class="btn-tab">Productos</button>
+        <button onclick="changeTable('pedidos')" id="btn-tab-pedidos" class="btn-tab">Pedidos</button>
+        <button onclick="changeTable('tecnicos')" id="btn-tab-tecnicos" class="btn-tab">Técnicos</button>
+    </div>
 
-                <div class="card animate-slide-up">
-                    <div class="table-header">
-                        <h3>Lista de Clientes Registrados</h3>
-                        <button onclick="fetchClientes()" class="btn-refresh">🔄 Actualizar</button>
-                    </div>
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nombre</th>
-                                    <th>Teléfono</th>
-                                    <th>Correo</th>
-                                    <th>Crédito</th>
-                                    <th>Zona</th>
-                                </tr>
-                            </thead>
-                            <tbody id="clientes-table-body">
-                                <tr>
-                                    <td colspan="6" class="text-center">Cargando datos desde Supabase...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <div class="main-dashboard-layout">
+        <div class="table-container">
+            <div id="client-message" class="message"></div>
+            <table class="data-table">
+                <thead id="dynamic-table-head">
+                    </thead>
+                <tbody id="clientes-table-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</section>
 
     </main>
 
