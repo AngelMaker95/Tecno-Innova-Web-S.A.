@@ -52,31 +52,49 @@
             <p id="auth-message" class="message"></p>
         </section>
 
-<section id="dashboard-section" class="card hidden">
-    <div class="dashboard-header">
-        <h2>Panel de Control - TecnoInnova S.A.</h2>
-        <p>Bienvenido, <span id="user-display" class="highlight"></span> | <a href="#" onclick="logout()">Cerrar Sesión</a></p>
-    </div>
+        <section id="dashboard-section" class="card hidden">
+            <div class="dashboard-header">
+                <h2>Panel de Control - TecnoInnova S.A.</h2>
+                <p>Bienvenido, <span id="user-display" class="highlight"></span> | <a href="#" onclick="logout()">Cerrar Sesión</a></p>
+            </div>
 
-    <div class="table-selector">
-        <button onclick="changeTable('clientes')" id="btn-tab-clientes" class="btn-tab active">Clientes</button>
-        <button onclick="changeTable('productos')" id="btn-tab-productos" class="btn-tab">Productos</button>
-        <button onclick="changeTable('pedidos')" id="btn-tab-pedidos" class="btn-tab">Pedidos</button>
-        <button onclick="changeTable('tecnicos')" id="btn-tab-tecnicos" class="btn-tab">Técnicos</button>
-    </div>
+            <div class="table-selector">
+                <button onclick="changeTable('clientes')" id="btn-tab-clientes" class="btn-tab active">Clientes</button>
+                <button onclick="changeTable('productos')" id="btn-tab-productos" class="btn-tab">Productos</button>
+                <button onclick="changeTable('pedidos')" id="btn-tab-pedidos" class="btn-tab">Pedidos</button>
+                <button onclick="changeTable('tecnicos')" id="btn-tab-tecnicos" class="btn-tab">Técnicos</button>
+            </div>
 
-    <div class="main-dashboard-layout">
-        <div class="table-container">
-            <div id="client-message" class="message"></div>
-            <table class="data-table">
-                <thead id="dynamic-table-head">
-                    </thead>
-                <tbody id="clientes-table-body">
-                    </tbody>
-            </table>
-        </div>
-    </div>
-</section>
+            <div class="main-dashboard-layout">
+                <!-- ========================================== -->
+                <!-- ¡NUEVO FORMULARIO INTEGRADO (AQUÍ VA EN LA LÍNEA 57)! -->
+                <!-- ========================================== -->
+                <div class="form-container card" style="margin-bottom: 20px;">
+                    <h3 id="form-title">Agregar Nuevo Registro (Clientes)</h3>
+                    <form id="dynamic-crud-form">
+                        <input type="hidden" id="crud-mode" value="CREATE">
+                        
+                        <div id="dynamic-inputs-area">
+                            <!-- Los campos de texto se inyectan solos por JavaScript -->
+                        </div>
+
+                        <div class="form-actions" style="margin-top: 15px;">
+                            <button type="submit" id="btn-submit-form" class="btn-primary">Guardar en Supabase</button>
+                            <button type="button" id="btn-cancel-edit" class="btn-secondary hidden" onclick="cancelEditing()">Cancelar Edición</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- ========================================== -->
+
+                <div class="table-container">
+                    <div id="client-message" class="message"></div>
+                    <table class="data-table">
+                        <thead id="dynamic-table-head"></thead>
+                        <tbody id="clientes-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
     </main>
 
