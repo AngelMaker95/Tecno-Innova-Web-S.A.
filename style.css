@@ -1,16 +1,20 @@
 /* =========================================================================
-   VARIABLES Y CONFIGURACIÓN GENERAL
+   VARIABLES Y CONFIGURACIÓN GENERAL (SISTEMA DE DISEÑO TECNOINNOVA S.A.)
    ========================================================================= */
 :root {
     --primary-color: #1e3a8a;   /* Azul Oscuro Corporativo */
     --secondary-color: #0d9488; /* Verde Azulado */
     --danger-color: #e11d48;    /* Rojo suave para errores/logout */
+    --success-color: #16a34a;   /* Verde para confirmaciones/estados altos */
+    --warning-color: #f59e0b;   /* Ámbar para pendientes/regulares */
     --bg-color: #f1f5f9;        /* Fondo gris claro */
     --card-bg: #ffffff;         /* Fondo de tarjetas blanco */
     --text-color: #334155;      /* Gris oscuro para texto */
+    --text-muted: #64748b;
     --border-color: #cbd5e1;    /* Bordes sutiles */
     --radius: 8px;
     --transition: all 0.3s ease;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
 * {
@@ -24,11 +28,14 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .container {
-    width: 90%;
-    max-width: 1200px;
+    width: 95%;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 20px 0;
 }
@@ -41,29 +48,36 @@ header {
     color: white;
     text-align: center;
     padding: 40px 0;
-    margin-bottom: 30px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
     font-size: 2.5rem;
     letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+header p {
+    color: #cbd5e1;
+    font-size: 0.95rem;
 }
 
 .card {
     background: var(--card-bg);
     padding: 25px;
     border-radius: var(--radius);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    margin-bottom: 25px;
+    box-shadow: var(--shadow);
+    border: 1px solid #e2e8f0;
 }
 
 footer {
     text-align: center;
     padding: 20px 0;
-    margin-top: 50px;
+    margin-top: auto; /* Empuja el footer al fondo si hay pocos datos */
     color: #64748b;
     border-top: 1px solid var(--border-color);
+    background-color: #ffffff;
+    font-size: 0.875rem;
 }
 
 /* =========================================================================
@@ -80,22 +94,33 @@ label {
     font-size: 0.9rem;
 }
 
-input, select {
+input, select, textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     font-size: 1rem;
+    background-color: #f8fafc;
+    color: var(--text-color);
     transition: var(--transition);
 }
 
-input:focus, select:focus {
+input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--primary-color);
+    background-color: #ffffff;
     box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
 }
 
-/* Botones */
+/* Estado visual para llaves primarias protegidas al editar */
+.readonly-field {
+    background-color: #e2e8f0 !important;
+    color: #64748b !important;
+    cursor: not-allowed;
+    border-color: #cbd5e1 !important;
+}
+
+/* Botones estructurados */
 button {
     cursor: pointer;
     padding: 10px 20px;
@@ -106,17 +131,22 @@ button {
     transition: var(--transition);
 }
 
-.btn-primary { background-color: var(--primary-color); color: white; width: 100%; }
+.btn-primary { background-color: var(--primary-color); color: white; }
 .btn-primary:hover { background-color: #1d4ed8; }
 
-.btn-secondary { background-color: var(--secondary-color); color: white; width: 100%; }
+.btn-secondary { background-color: var(--secondary-color); color: white; }
 .btn-secondary:hover { background-color: #0f766e; }
 
 .btn-danger { background-color: var(--danger-color); color: white; }
 .btn-danger:hover { background-color: #be123c; }
 
-.btn-refresh { background-color: #64748b; color: white; font-size: 0.85rem; padding: 6px 12px; }
-.btn-refresh:hover { background-color: #475569; }
+.form-actions {
+    display: flex;
+    gap: 10px;
+}
+.form-actions button {
+    flex: 1;
+}
 
 /* Pestañas de Autenticación */
 .auth-tabs {
@@ -138,112 +168,300 @@ button {
     border-bottom: 3px solid var(--primary-color);
 }
 
+#auth-section { 
+    max-width: 450px; 
+    margin: 40px auto; 
+}
+
 /* =========================================================================
-   TABLAS RESPONSIVAS
+   DASHBOARD: PANEL DE CONTROL Y DISTRIBUCIÓN GRID
    ========================================================================= */
-.table-header {
+.dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-.table-responsive {
-    width: 100%;
-    overflow-x: auto;
+.dashboard-header h2 {
+    font-size: 1.4rem;
+    font-weight: bold;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+.dashboard-header p {
     font-size: 0.95rem;
 }
 
-th, td {
+.dashboard-header a {
+    color: var(--danger-color);
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 5px;
+}
+.dashboard-header a:hover { text-decoration: underline; }
+
+.highlight {
+    background-color: #dbeafe;
+    color: var(--primary-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* Selectores de Tabla (Estilo de pestañas superiores) */
+.table-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.btn-tab {
+    background: #edf2f7;
+    color: #4a5568;
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: var(--radius);
+    transition: var(--transition);
+    text-align: center;
+}
+
+.btn-tab.active, .btn-tab:hover {
+    background: #3182ce;
+    color: white;
+    border-color: #3182ce;
+}
+
+/* Nueva distribución a dos columnas (Formulario izquierda, Tabla derecha) */
+.main-dashboard-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.form-container {
+    position: sticky;
+    top: 20px; /* Mantiene el formulario visible si la tabla es muy larga */
+}
+
+.form-container h3 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.table-tag {
+    font-size: 0.75rem;
+    background-color: #e2e8f0;
+    color: #475569;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+.tag-update {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.form-editing-active {
+    border: 2px solid var(--warning-color) !important;
+}
+
+/* =========================================================================
+   TABLAS RESPONSIVAS Y COMPONENTES ADAPTATIVOS
+   ========================================================================= */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    background-color: #ffffff;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.925rem;
+}
+
+.data-table th, .data-table td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
 }
 
-th {
+.data-table th {
     background-color: #f8fafc;
     color: var(--primary-color);
     font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
 }
 
-tr:hover {
+.data-table tbody tr:hover {
     background-color: #f8fafc;
 }
 
+/* Celdas e Identificadores dinámicos */
+.id-pill {
+    font-family: monospace;
+    background-color: #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #334155;
+}
+
+.zone-pill {
+    font-size: 0.85rem;
+    background-color: #e0f2fe;
+    color: #0369a1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.price-tag {
+    font-weight: bold;
+    color: #0f172a;
+}
+
+/* Badges Redondeados de Estados */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border-radius: 12px;
+    text-align: center;
+}
+.badge-excelente, .badge-aprobado { background-color: #d1fae5; color: #065f46; }
+.badge-bueno { background-color: #e0f2fe; color: #0369a1; }
+.badge-regular, .badge-pendiente { background-color: #fef3c7; color: #92400e; }
+.badge-malo, .badge-rechazado { background-color: #fee2e2; color: #991b1b; }
+
+/* Flujo de pedidos con puntos de color */
+.status-dot {
+    position: relative;
+    padding-left: 15px;
+}
+.status-dot::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #94a3b8;
+}
+.status-solicitado::before { background-color: #38bdf8; }
+.status-en-estudio::before { background-color: var(--warning-color); }
+.status-aprobado-financieramente::before { background-color: #a855f7; }
+.status-instalado::before { background-color: var(--success-color); }
+
+/* Inventario y carga de trabajo */
+.stock-danger { color: var(--danger-color); font-weight: bold; background-color: #fee2e2; padding: 2px 4px; border-radius: 4px; }
+.stock-normal { color: var(--success-color); font-weight: 500; }
+.workload-counter { background-color: #f3e8ff; color: #6b21a8; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+
+/* Celdas de Acción y Botones Inline */
+.actions-cell {
+    white-space: nowrap;
+}
+
+.btn-action {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.btn-edit {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+.btn-edit:hover { background-color: #bfdbfe; }
+
+.btn-delete {
+    background: #fee2e2;
+    color: var(--danger-color);
+    border: 1px solid #fca5a5;
+}
+.btn-delete:hover {
+    background: #fca5a5;
+}
+
 /* =========================================================================
-   UTILIDADES, ANIMACIONES Y GRID SYSTEM
+   SISTEMA DE ALERTAS DE RETROALIMENTACIÓN
    ========================================================================= */
-.grid-2 {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 25px;
+.message {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: var(--radius);
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-align: center;
+    display: none;
 }
+.message:not(:empty) { display: block; }
 
-@media (min-width: 768px) {
-    .grid-2 { grid-template-columns: 1fr 1.5fr; }
-    #auth-section { max-width: 450px; margin: 0 auto 25px auto; }
-}
+.msg-info { background-color: #e0f2fe; color: #0369a1; border-left: 4px solid #38bdf8; }
+.msg-success { background-color: #d1fae5; color: #065f46; border-left: 4px solid var(--success-color); }
+.msg-error { background-color: #fee2e2; color: #991b1b; border-left: 4px solid var(--danger-color); }
 
+/* Mensajes de carga internos en tablas */
+.loading-status { color: #0369a1; font-weight: bold; padding: 20px !important; }
+.status-error { color: var(--danger-color); font-weight: bold; padding: 20px !important; }
+.status-empty { color: var(--text-muted); padding: 20px !important; }
+
+/* =========================================================================
+   UTILIDADES Y ANIMACIONES
+   ========================================================================= */
 .hidden { display: none !important; }
 .text-center { text-align: center; }
-.message { margin-top: 10px; font-weight: bold; font-size: 0.9rem; text-align: center; }
-.success { color: #16a34a; }
-.error { color: var(--danger-color); }
 
-.welcome-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(to right, #ffffff, #f8fafc);
-}
-
-/* Animaciones */
 .animate-fade-in { animation: fadeIn 0.6s ease-out; }
 .animate-slide-up { animation: slideUp 0.5s ease-out; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Botones de navegación del panel */
-.table-selector {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 10px;
-}
-.btn-tab {
-    background: #edf2f7;
-    color: #4a5568;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 5px;
-    transition: 0.2s;
-}
-.btn-tab.active, .btn-tab:hover {
-    background: #3182ce;
-    color: white;
+/* =========================================================================
+   DISEÑO ADAPTABLE (MEDIA QUERIES)
+   ========================================================================= */
+@media (max-width: 1024px) {
+    .main-dashboard-layout {
+        grid-template-columns: 1fr; /* Pasa a flujo vertical en pantallas medianas o pequeñas */
+    }
+    .form-container {
+        position: static;
+    }
+    .table-selector {
+        grid-template-columns: repeat(2, 1fr); /* 2x2 en tabletas */
+    }
 }
 
-/* Botón de eliminar fila */
-.btn-delete {
-    background: #e53e3e;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: 0.2s;
-}
-.btn-delete:hover {
-    background: #c53030;
+@media (max-width: 640px) {
+    .table-selector {
+        grid-template-columns: 1fr; /* 1 columna vertical en móviles */
+    }
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    header h1 { font-size: 2rem; }
 }
