@@ -55,7 +55,7 @@ function checkSession() {
         if(userDisplay) userDisplay.textContent = sessionUser;
         authSection.classList.add('hidden');
         dashboardSection.classList.remove('hidden');
-        changeTable('clientes'); // Arranca mostrando clientes
+        changeTable(currentTable || 'clientes'); 
     } else {
         authSection.classList.remove('hidden');
         dashboardSection.classList.add('hidden');
@@ -67,33 +67,35 @@ function logout() {
     checkSession();
 }
 
-// Cambiar de Pestaña de Tabla activa
 function changeTable(tableName) {
     currentTable = tableName;
     document.querySelectorAll('.btn-tab').forEach(btn => btn.classList.remove('active'));
     const activeBtn = document.getElementById(`btn-tab-${tableName}`);
     if(activeBtn) activeBtn.classList.add('active');
     
-    if(clientMessage) clientMessage.textContent = "";
-    cancelEditing(); // Resetear el formulario al cambiar de sección
+    if(clientMessage) {
+        clientMessage.textContent = "";
+        clientMessage.className = "message"; // Resetear clases de alerta
+    }
+    cancelEditing(); 
     loadTableData();
-    buildDynamicFormInputs(); // Re-dibujar campos del formulario
+    buildDynamicFormInputs(); 
 }
 
 // =========================================================================
-// CONSTRUCTOR DINÁMICO DE FORMULARIOS (SE ADAPTA A LA TABLA ACTIVA)
+// CONSTRUCTOR DINÁMICO DE FORMULARIOS
 // =========================================================================
 
 function buildDynamicFormInputs() {
-    formTitle.textContent = `Agregar Nuevo Registro (${currentTable.toUpperCase()})`;
-    inputsArea.innerHTML = ''; // Vaciar campos anteriores
+    formTitle.innerHTML = `<span class="table-tag">${currentTable.toUpperCase()}</span> Agregar Registro`;
+    inputsArea.innerHTML = ''; 
 
     let inputsHTML = '';
 
     if (currentTable === 'clientes') {
         inputsHTML = `
             <div class="form-group">
-                <label>ID Cliente (Cédula/RUT/RUC)</label>
+                <label>ID Cliente (Cédula/RUT)</label>
                 <input type="text" id="field-id_cliente" required placeholder="Ej: CLI01">
             </div>
             <div class="form-group">
@@ -137,7 +139,7 @@ function buildDynamicFormInputs() {
                 <input type="number" id="field-stock_disponible" required min="0" value="10">
             </div>
             <div class="form-group">
-                <label>Stock Mínimo de Seguridad</label>
+                <label>Stock Mínimo</label>
                 <input type="number" id="field-stock_minimo" required min="0" value="2">
             </div>
             <div class="form-group">
@@ -184,7 +186,7 @@ function buildDynamicFormInputs() {
                 <input type="text" id="field-id_tecnico" required placeholder="Ej: TEC01">
             </div>
             <div class="form-group">
-                <label>Nombre Completo del Técnico</label>
+                <label>Nombre Completo</label>
                 <input type="text" id="field-nombre_tecnico" required placeholder="Ej: Carlos Técnico">
             </div>
             <div class="form-group">
@@ -192,7 +194,7 @@ function buildDynamicFormInputs() {
                 <input type="number" id="field-carga_trabajo_activa" required min="0" value="0">
             </div>
             <div class="form-group">
-                <label>ID Zona Geográfica Asignada</label>
+                <label>ID Zona Asignada</label>
                 <input type="text" id="field-id_zona_asignada" required placeholder="Ej: ZONA01">
             </div>
         `;
@@ -202,27 +204,27 @@ function buildDynamicFormInputs() {
 }
 
 // =========================================================================
-// RENDERIZADO DE TABLAS DE DATOS (READ)
+// RENDERIZADO DE TABLAS DE DATOS
 // =========================================================================
 
 async function loadTableData() {
-    tableBody.innerHTML = '<tr><td colspan="10" class="text-center">Consultando Supabase...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="10" class="text-center loading-status">Consultando base de datos segura...</td></tr>';
     
     let headHTML = '';
     let primaryKeyColumn = '';
 
     if (currentTable === 'clientes') {
         primaryKeyColumn = 'id_cliente';
-        headHTML = `<tr><th>ID Cliente</th><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Crédito</th><th>Zona</th><th>Acciones</th></tr>`;
+        headHTML = `<tr><th>ID Cliente</th><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Crédito</th><th>Zona</th><th class="text-center">Acciones</th></tr>`;
     } else if (currentTable === 'productos') {
         primaryKeyColumn = 'id_producto';
-        headHTML = `<tr><th>ID Producto</th><th>Descripción</th><th>Stock Disp.</th><th>Stock Mín.</th><th>Precio</th><th>Acciones</th></tr>`;
+        headHTML = `<tr><th>ID Producto</th><th>Descripción</th><th>Stock Disp.</th><th>Stock Mín.</th><th>Precio</th><th class="text-center">Acciones</th></tr>`;
     } else if (currentTable === 'pedidos') {
         primaryKeyColumn = 'id_pedido';
-        headHTML = `<tr><th>ID Pedido</th><th>Fecha</th><th>ID Cliente</th><th>Val. Técnica</th><th>Estado</th><th>Acciones</th></tr>`;
+        headHTML = `<tr><th>ID Pedido</th><th>Fecha</th><th>ID Cliente</th><th>Val. Técnica</th><th>Estado</th><th class="text-center">Acciones</th></tr>`;
     } else if (currentTable === 'tecnicos') {
         primaryKeyColumn = 'id_tecnico';
-        headHTML = `<tr><th>ID Técnico</th><th>Nombre</th><th>Carga Trabajo</th><th>Zona Asignada</th><th>Acciones</th></tr>`;
+        headHTML = `<tr><th>ID Técnico</th><th>Nombre</th><th>Carga Trabajo</th><th>Zona Asignada</th><th class="text-center">Acciones</th></tr>`;
     }
 
     tableHead.innerHTML = headHTML;
@@ -233,12 +235,12 @@ async function loadTableData() {
         .order(primaryKeyColumn, { ascending: true });
 
     if (error) {
-        tableBody.innerHTML = `<tr><td colspan="10" class="text-center error">Error SQL: ${error.message}</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="10" class="text-center status-error">Error SQL: ${error.message}</td></tr>`;
         return;
     }
 
     if (data.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="10" class="text-center">No hay registros en esta tabla.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="10" class="text-center status-empty">No hay registros disponibles en esta sección.</td></tr>`;
         return;
     }
 
@@ -247,36 +249,57 @@ async function loadTableData() {
         const tr = document.createElement('tr');
         let rowsCells = '';
         
-        // Convertimos el registro a un string seguro para pasarlo a la función de editar
         const safeRowData = btoa(unescape(encodeURIComponent(JSON.stringify(row))));
 
+        // Clasificación visual limpia usando clases dinámicastoLowerCase() para CSS
         if (currentTable === 'clientes') {
+            const creditClass = `badge-${row.historial_crediticio.toLowerCase()}`;
             rowsCells = `
-                <td><strong>${row.id_cliente}</strong></td><td>${row.nombre}</td><td>${row.telefono || 'N/A'}</td>
-                <td>${row.correo || 'N/A'}</td><td><span class="badge">${row.historial_crediticio}</span></td><td>${row.id_zona}</td>
+                <td><span class="id-pill">${row.id_cliente}</span></td>
+                <td><strong>${row.nombre}</strong></td>
+                <td>${row.telefono || '—'}</td>
+                <td class="text-muted">${row.correo || '—'}</td>
+                <td><span class="badge ${creditClass}">${row.historial_crediticio}</span></td>
+                <td><span class="zone-pill">${row.id_zona}</span></td>
             `;
         } else if (currentTable === 'productos') {
+            const isLowStock = row.stock_disponible <= row.stock_minimo ? 'stock-danger' : 'stock-normal';
             rowsCells = `
-                <td><strong>${row.id_producto}</strong></td><td>${row.nombre_producto}</td><td>${row.stock_disponible}</td>
-                <td>${row.stock_minimo}</td><td>$${row.precio_unitario}</td>
+                <td><span class="id-pill">${row.id_producto}</span></td>
+                <td><strong>${row.nombre_producto}</strong></td>
+                <td><span class="${isLowStock}">${row.stock_disponible}</span></td>
+                <td class="text-muted">${row.stock_minimo}</td>
+                <td class="price-tag">$${parseFloat(row.precio_unitario).toFixed(2)}</td>
             `;
         } else if (currentTable === 'pedidos') {
+            const techClass = `badge-${row.validacion_tecnica.toLowerCase()}`;
+            const flowClass = `status-${row.estado_pedido.toLowerCase().replace(/ /g, '-')}`;
             rowsCells = `
-                <td><strong>${row.id_pedido}</strong></td><td>${row.fecha_pedido}</td><td>${row.id_cliente}</td>
-                <td>${row.validacion_tecnica}</td><td><span class="badge">${row.estado_pedido}</span></td>
+                <td><span class="id-pill">${row.id_pedido}</span></td>
+                <td class="text-muted">${row.fecha_pedido}</td>
+                <td><span class="zone-pill">${row.id_cliente}</span></td>
+                <td><span class="badge ${techClass}">${row.validacion_tecnica}</span></td>
+                <td><span class="status-dot ${flowClass}">${row.estado_pedido}</span></td>
             `;
         } else if (currentTable === 'tecnicos') {
             rowsCells = `
-                <td><strong>${row.id_tecnico}</strong></td><td>${row.nombre_tecnico}</td><td>${row.carga_trabajo_activa}</td><td>${row.id_zona_asignada}</td>
+                <td><span class="id-pill">${row.id_tecnico}</span></td>
+                <td><strong>${row.nombre_tecnico}</strong></td>
+                <td><span class="workload-counter">${row.carga_trabajo_activa}</span></td>
+                <td><span class="zone-pill">${row.id_zona_asignada}</span></td>
             `;
         }
 
-        // AGREGAR BOTONES DE EDITAR Y ELIMINAR A CADA FILA DE FORMA ESTÁNDAR
+        // El JavaScript ya NO tiene estilos en línea rígidos, usa clases visuales puras.
         const idActual = row[primaryKeyColumn];
         rowsCells += `
-            <td>
-                <button onclick="startEditing('${safeRowData}')" class="btn-tab" style="background:#3182ce;color:white;padding:3px 8px;font-size:0.8rem;margin-right:4px;">Editar</button>
-                <button onclick="deleteRow('${idActual}', '${primaryKeyColumn}')" class="btn-delete" style="padding:3px 8px;font-size:0.8rem;">Eliminar</button>
+            <td class="text-center actions-cell">
+                <button onclick="startEditing('${safeRowData}')" class="btn-action btn-edit" title="Editar Registro">
+                    <i>✏️</i> Editar
+                </button>
+                <button onclick="deleteRow('${idActual}', '${primaryKeyColumn}')" class="btn-action btn-delete" title="Eliminar Registro">
+                    <i>🗑️</i>
+                </button>
             </td>
         `;
         tr.innerHTML = rowsCells;
@@ -285,28 +308,25 @@ async function loadTableData() {
 }
 
 // =========================================================================
-// ACCIÓN: PROCESAR INSERCIÓN O ACTUALIZACIÓN (GUARDAR - UPSERT)
+// ACCIONES: CONTROL FORMULARIO (UPSERT, EDIT, DELETE)
 // =========================================================================
 
 crudForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    showFeedback(clientMessage, 'Guardando en la nube de Supabase...', 'info');
+    showFeedback(clientMessage, 'Sincronizando con TecnoInnova Cloud...', 'info');
 
-    // Construir el objeto de datos dinámicamente extrayendo los valores de los inputs cargados
     const payload = {};
     const inputs = inputsArea.querySelectorAll('input, select');
     
     inputs.forEach(input => {
-        const key = input.id.replace('field-', ''); // Recuperamos el nombre de la columna real
+        const key = input.id.replace('field-', ''); 
         let value = input.value.trim();
         
-        // Conversión a tipo numérico si es necesario
         if (input.type === 'number') {
             value = value.includes('.') ? parseFloat(value) : parseInt(value, 10);
         }
         if (value === '') value = null;
         
-        // Poner las claves principales siempre en mayúsculas por orden de base de datos
         if (key.startsWith('id_') && typeof value === 'string') {
             value = value.toUpperCase();
         }
@@ -314,47 +334,40 @@ crudForm.addEventListener('submit', async (e) => {
         payload[key] = value;
     });
 
-    // .upsert() guarda si no existe, o actualiza si la Clave Primaria coincide.
-    const { data, error } = await supabaseClient
+    const { error } = await supabaseClient
         .from(currentTable)
         .upsert([payload]);
 
     if (error) {
-        console.error(error);
         showFeedback(clientMessage, `Error de consistencia SQL: ${error.message}`, 'error');
     } else {
-        showFeedback(clientMessage, `¡Registro procesado con éxito en la tabla ${currentTable}!`, 'success');
+        showFeedback(clientMessage, `¡Tabla [${currentTable.toUpperCase()}] actualizada correctamente!`, 'success');
         cancelEditing();
         loadTableData();
     }
 });
 
-// =========================================================================
-// ACCIÓN: COLOCAR DATOS EN EL FORMULARIO PARA EDITAR (UPDATE)
-// =========================================================================
-
 function startEditing(encodedRowData) {
     const row = JSON.parse(decodeURIComponent(escape(atob(encodedRowData))));
     
     crudMode.value = "UPDATE";
-    formTitle.textContent = `Modificando Registro Activo (${currentTable.toUpperCase()})`;
+    formTitle.innerHTML = `<span class="table-tag tag-update">EDITANDO</span> Modificar Registro`;
     if(btnCancel) btnCancel.classList.remove('hidden');
 
-    // Rellenar cada input con el valor que tiene actualmente en Supabase
+    crudForm.classList.add('form-editing-active');
+
     for (const key in row) {
         const inputField = document.getElementById(`field-${key}`);
         if (inputField) {
             inputField.value = row[key];
             
-            // Bloquear el campo ID si estamos editando (las llaves primarias no se deben alterar)
             if (key.startsWith('id_')) {
                 inputField.readOnly = true;
-                inputField.style.background = "#e2e8f0";
+                inputField.classList.add('readonly-field'); // Asignación de diseño vía CSS
             }
         }
     }
     
-    // Enfocar el scroll hacia el formulario
     crudForm.scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -362,17 +375,14 @@ function cancelEditing() {
     crudMode.value = "CREATE";
     if(btnCancel) btnCancel.classList.add('hidden');
     crudForm.reset();
-    buildDynamicFormInputs(); // Regenera campos limpios y quita los readOnly
+    crudForm.classList.remove('form-editing-active');
+    buildDynamicFormInputs(); 
 }
 
-// =========================================================================
-// ACCIÓN: BORRAR FILAS DE LA BASE DE DATOS (DELETE)
-// =========================================================================
-
 async function deleteRow(idValue, idColumnName) {
-    if (!confirm(`¿Deseas eliminar el registro [ ${idValue} ] de la tabla ${currentTable} en Supabase?`)) return;
+    if (!confirm(`¿Estás seguro de eliminar permanentemente el registro [ ${idValue} ] de la tabla ${currentTable}?`)) return;
 
-    showFeedback(clientMessage, 'Procesando eliminación...', 'info');
+    showFeedback(clientMessage, 'Eliminando registro de la base de datos...', 'info');
 
     const { error } = await supabaseClient
         .from(currentTable)
@@ -381,32 +391,32 @@ async function deleteRow(idValue, idColumnName) {
 
     if (error) {
         if(error.code === '23503') {
-            showFeedback(clientMessage, 'Error estructural: No puedes borrar este registro porque tiene dependencias relacionales en otras tablas.', 'error');
+            showFeedback(clientMessage, 'No se puede eliminar: Este registro está vinculado a otras operaciones activas.', 'error');
         } else {
             showFeedback(clientMessage, `Error: ${error.message}`, 'error');
         }
     } else {
-        showFeedback(clientMessage, 'Registro eliminado correctamente de la nube.', 'success');
+        showFeedback(clientMessage, 'Registro removido exitosamente.', 'success');
         cancelEditing();
         loadTableData();
     }
 }
 
 // =========================================================================
-// SISTEMA DE USUARIOS SIMULADO DE RESPUESTA DIRECTA
+// SISTEMA DE AUTENTICACIÓN
 // =========================================================================
 
 registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('reg-username').value.trim();
     const password = document.getElementById('reg-password').value;
-    if (password.length < 6) { return showFeedback(authMessage, 'Mínimo 6 caracteres.', 'error'); }
+    if (password.length < 6) { return showFeedback(authMessage, 'La contraseña debe tener mínimo 6 caracteres.', 'error'); }
 
     const { error } = await supabaseClient.from('usuarios').insert([{ username, password_hash: password }]); 
     if (error) {
-        showFeedback(authMessage, error.code === '23505' ? 'El usuario ya existe.' : error.message, 'error');
+        showFeedback(authMessage, error.code === '23505' ? 'El nombre de usuario ya se encuentra registrado.' : error.message, 'error');
     } else {
-        showFeedback(authMessage, 'Creado con éxito.', 'success');
+        showFeedback(authMessage, 'Cuenta creada. Redirigiendo...', 'success');
         setTimeout(() => switchAuthTab('login'), 1500);
     }
 });
@@ -418,7 +428,7 @@ loginForm.addEventListener('submit', async (e) => {
 
     const { data, error } = await supabaseClient.from('usuarios').select('*').eq('username', username).single(); 
     if (error || !data || data.password_hash !== password) {
-        showFeedback(authMessage, 'Credenciales incorrectas.', 'error');
+        showFeedback(authMessage, 'Usuario o contraseña inválidos.', 'error');
     } else {
         localStorage.setItem('tecnoinnova_user', data.username);
         checkSession();
@@ -428,7 +438,7 @@ loginForm.addEventListener('submit', async (e) => {
 function showFeedback(element, text, type) {
     if(element) {
         element.textContent = text;
-        element.className = `message ${type}`;
+        element.className = `message msg-${type}`; // Estilos controlados por CSS
     }
 }
 
